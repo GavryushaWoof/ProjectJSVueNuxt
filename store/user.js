@@ -1,24 +1,37 @@
 export const state = () => ({
-    user: [],
-    email: '',
+    user: null,
+    token: false
 })
 
 export const mutations = {
     setUsers(state, user) {
         state.user = user
     },
-    addEmailToStore(state, email) {
-        state.obj.email = email
+    setToken(state, token) {
+        state.token = token
     }
 }
 
 export const actions = {
-    async fetch({ commit }) {
-        const user = await this.$axios.$get('https://randomuser.me/api/?results')
-        commit('setUsers', user)
+    async fetch({ dispatch }, authData) {
+        const response = await this.$axios.$get('https://randomuser.me/api/?results');
+        const user = response.results[0];
+        dispatch('mapMockUserToStore', { user, email: authData.email });
+    },
+    mapMockUserToStore({ commit }, { user, email }) {
+        const mappedUser = {
+            email,
+            name: user.name,
+            avatar: user.picture.large
+        };
+        const mockToken = true;
+        commit('setUsers', mappedUser);
+        commit('setToken', mockToken);
+        this.$router.push("/user");
     }
 }
 
 export const getters = {
-    user: s => s.user
+    user: s => s.user,
+    token: s => s.token
 }

@@ -6,14 +6,14 @@
           <v-row align="end" class="fill-height">
             <v-col align-self="start" class="pa-0" cols="12">
               <v-avatar class="profile" color="grey" size="164" tile>
-                <v-img :src='user.results[0].picture.large'></v-img>
+                <v-img :src='user.avatar'></v-img>
               </v-avatar>
             </v-col>
             <v-col class="py-0">
               <v-list-item color="rgba(0, 0, 0, .4)" dark>
                 <v-list-item-content>
-                  <v-list-item-title class="title">{{user.results[0].name.title}} {{user.results[0].name.first}} {{user.results[0].name.last}}</v-list-item-title>
-                  <v-list-item-subtitle>Network Engineer</v-list-item-subtitle>
+                  <v-list-item-title class="title">{{user.name.title}} {{user.name.first}} {{user.name.last}}</v-list-item-title>
+                  <v-list-item-subtitle>{{user.email}}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </v-col>
@@ -28,14 +28,15 @@
 <script>
 export default {
   async fetch({ store }) {
-    if (store.getters["user/user"].length === 0) {
-      await store.dispatch("user/fetch");
+    if (!store.getters["user/user"]) {
+      this.$router.push("/");
     }
   },
   computed: {
     user() {
       return this.$store.getters["user/user"];
     }
-  }
+  },
+  middleware: ["auth"]
 };
 </script>
